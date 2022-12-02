@@ -14,7 +14,7 @@ namespace JokesIngest.Tests;
 [Subject(typeof(JokesProcessor))]
 public class JokesProcessorTests : WithSubject<JokesProcessor>
 {
-    static IJokesRepository repository;
+    static IJokesSaver repository;
 
     Establish ctx = () =>
     {
@@ -22,8 +22,8 @@ public class JokesProcessorTests : WithSubject<JokesProcessor>
             .WhenToldTo(x => x.SatisfiedBy(Param<Joke>.IsAnything))
             .Return<Joke>(x => x.Value.Length > 1);
 
-        repository = An<IJokesRepository>();
-        Configure(x => x.For<IJokesRepository>()
+        repository = An<IJokesSaver>();
+        Configure(x => x.For<IJokesSaver>()
             .Use(repository));
 
     };

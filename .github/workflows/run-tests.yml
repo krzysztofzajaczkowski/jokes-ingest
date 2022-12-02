@@ -1,10 +1,13 @@
-name: Run unit tests
+name: Run tests
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
       
 jobs:
-  test:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -15,10 +18,17 @@ jobs:
           dotnet-version: 6.0.x
           
       - name: Restore dependencies
-        run: dotnet restore tests/JokesIngest.Tests
+        run: |
+          dotnet restore tests/JokesIngest.Tests
+          dotnet restore tests/JokesIngest.IntegrationTests
       
-      - name: Build
-        run: dotnet build -c Release --no-restore /p:ContinuousIntegrationBuild=true tests/JokesIngest.Tests
+      - name: Build tests projects
+        run: |
+          dotnet build -c Release --no-restore /p:ContinuousIntegrationBuild=true tests/JokesIngest.Tests
+          dotnet build -c Release --no-restore /p:ContinuousIntegrationBuild=true tests/JokesIngest.IntegrationTests
       
-      - name: Test
+      - name: Unit tests
         run: dotnet test -c Release --no-build --verbosity normal tests/JokesIngest.Tests
+        
+      - name: Integration tests
+        run: dotnet test -c Release --no-build --verbosity normal tests/JokesIngest.IntegrationTests

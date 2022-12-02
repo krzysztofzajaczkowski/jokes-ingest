@@ -6,13 +6,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-			<_Parameter1>JokesIngest.Tests</_Parameter1>
-		</AssemblyAttribute>
+	  <PackageReference Include="Dapper" Version="2.0.123" />
+	  <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0" />
+	  <PackageReference Include="System.Linq.Async" Version="6.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>JokesIngest.Tests</_Parameter1>
+		</AssemblyAttribute>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>JokesIngest.IntegrationTests</_Parameter1>
+		</AssemblyAttribute>
 	</ItemGroup>
 
 </Project>
