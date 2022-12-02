@@ -28,6 +28,12 @@ var host = new HostBuilder()
         services.AddSingleton(provider => new JokesRepositoryConfiguration(
             provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")));
 
+        services.AddScoped<IJokeFilter, RegexFilter>(provider =>
+        {
+            var config = provider.GetRequiredService<IConfiguration>();
+            return new RegexFilter(config.GetValue<string>("JokeRegexFilter"));
+        });
+
         services.Configure<JokesApiConfiguration>(context.Configuration.GetSection("JokesProvider"));
         services.AddHttpClient<ApiJokesProvider>((provider, client) =>
         {

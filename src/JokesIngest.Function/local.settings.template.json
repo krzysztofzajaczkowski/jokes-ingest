@@ -3,7 +3,8 @@
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "TriggerSchedule": "0 */5 * * * *"
+    "TriggerSchedule": "0 */5 * * * *",
+    "JokeRegexFilter": "^.{0,200}$"
   },
   "JokesProvider": {
     "BatchSize": 5,
