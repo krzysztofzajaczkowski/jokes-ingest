@@ -23,16 +23,11 @@ namespace JokesIngest
 
         public async Task IngestNextBatch()
         {
-            var jokes = await _jokesProvider.GetJokesAsync();
+            var jokes = _jokesProvider.GetJokesAsync();
 
             jokes = jokes.ApplyFilters(_filters);
 
-            // ReSharper disable PossibleMultipleEnumeration
-            // .Any() will move iterator only once to check if collection has any elements. Only first element will be enumerated twice.
-            if (jokes.Any())
-            {
-                _jokesRepository.SaveJokes(jokes);
-            }
+            _jokesRepository.SaveJokes(jokes);
         }
     }
 }

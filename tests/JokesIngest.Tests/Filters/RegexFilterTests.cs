@@ -21,21 +21,21 @@ public class RegexFilterTests
 
     class When_joke_shorter_than_10_characters
     {
-        Establish ctx = () => joke = Joke.From("Joke");
+        Establish ctx = () => joke = New.Joke(value: "Joke");
 
         It should_satisfy_filter = () => result.ShouldBeTrue();
     }
 
     class When_joke_exactly_10_characters
     {
-        Establish ctx = () => joke = Joke.From("Short joke");
+        Establish ctx = () => joke = New.Joke(value: "Short joke");
 
         It should_satisfy_filter = () => result.ShouldBeTrue();
     }
 
     class When_joke_longer_than_10_characters
     {
-        Establish ctx = () => joke = Joke.From("Longer joke");
+        Establish ctx = () => joke = New.Joke(value: "Longer joke");
 
         It should_not_satisfy_filter = () => result.ShouldBeFalse();
     }

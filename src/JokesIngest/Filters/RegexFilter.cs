@@ -14,7 +14,7 @@ namespace JokesIngest.Filters
 
         public bool SatisfiedBy(Joke joke)
         {
-            return Regex.IsMatch(joke.Text, _pattern);
+            return Regex.IsMatch(joke.Value, _pattern);
         }
     }
 }
