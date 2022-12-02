@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using JokesIngest.Filters;
 using JokesIngest.Provider;
@@ -11,13 +10,13 @@ namespace JokesIngest
     public class JokesProcessor
     {
         private readonly IJokesProvider _jokesProvider;
-        private readonly IJokesRepository _jokesRepository;
+        private readonly IJokesSaver _jokesSaver;
         private readonly IEnumerable<IJokeFilter> _filters;
 
-        public JokesProcessor(IJokesProvider jokesProvider, IJokesRepository jokesRepository, IEnumerable<IJokeFilter> filters)
+        public JokesProcessor(IJokesProvider jokesProvider, IJokesSaver jokesSaver, IEnumerable<IJokeFilter> filters)
         {
             _jokesProvider = jokesProvider;
-            _jokesRepository = jokesRepository;
+            _jokesSaver = jokesSaver;
             _filters = filters;
         }
 
@@ -27,7 +26,7 @@ namespace JokesIngest
 
             jokes = jokes.ApplyFilters(_filters);
 
-            _jokesRepository.SaveJokes(jokes);
+            await _jokesSaver.SaveJokes(jokes);
         }
     }
 }

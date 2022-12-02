@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\JokesIngest\JokesIngest.csproj" />
+		<ProjectReference Include="..\JokesIngest.Tests\JokesIngest.Tests.csproj" />
 	</ItemGroup>
 
 </Project>
