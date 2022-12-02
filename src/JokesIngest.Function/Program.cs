@@ -13,7 +13,7 @@ var host = new HostBuilder()
     .ConfigureAppConfiguration(config =>
         config.SetBasePath(Directory.GetCurrentDirectory())
 #if DEBUG
-            .AddJsonFile("local.settings.json")
+            .AddJsonFile("local.settings.json", true)
 #endif
             .AddEnvironmentVariables())
     .ConfigureServices((context, services) =>
