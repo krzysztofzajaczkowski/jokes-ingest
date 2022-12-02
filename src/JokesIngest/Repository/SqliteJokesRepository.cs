@@ -8,7 +8,7 @@ using Microsoft.Data.Sqlite;
 
 namespace JokesIngest.Repository;
 
-internal class SqliteJokesRepository : IJokesSaver, IDisposable
+public class SqliteJokesRepository : IJokesSaver, IDisposable
 {
     private readonly JokesRepositoryConfiguration _jokesRepositoryConfiguration;
     private SqliteConnection? _connection;
@@ -46,7 +46,7 @@ internal class SqliteJokesRepository : IJokesSaver, IDisposable
 
         var tableName = tables.FirstOrDefault();
 
-        if (string.IsNullOrEmpty(tableName) || tableName == expectedTableName)
+        if (string.IsNullOrEmpty(tableName))
         {
             await Connection.ExecuteAsync(@"
                 CREATE TABLE Jokes (

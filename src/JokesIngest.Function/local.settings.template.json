@@ -1,0 +1,21 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "TriggerSchedule": "0 */5 * * * *"
+  },
+  "JokesProvider": {
+    "BatchSize": 5,
+    "JokeResourcePath": "<<PATH>>",
+    "BaseAddress": "<<URL>>",
+    "Headers": {
+      "accept": "application/json",
+      "X-RapidAPI-Key": "<<KEY>>",
+      "X-RapidAPI-Host": "<<HOST>>"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "DataSource=db.sqlite"
+  }
+}
