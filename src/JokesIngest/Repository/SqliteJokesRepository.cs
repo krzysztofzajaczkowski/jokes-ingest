@@ -53,7 +53,7 @@ internal class SqliteJokesRepository : IJokesSaver, IDisposable
                     Id CHAR(22) NOT NULL PRIMARY KEY,
                     IconUrl VARCHAR(100) NOT NULL,
                     Url VARCHAR(100) NOT NULL,
-                    Value VARCHAR(200) NOT NULL
+                    Value VARCHAR(200) UNIQUE NOT NULL
                 );"
             );
         }
@@ -66,7 +66,7 @@ internal class SqliteJokesRepository : IJokesSaver, IDisposable
         await foreach (var joke in jokes)
         {
             await Connection.ExecuteAsync(
-                "INSERT INTO Jokes(Id, IconUrl, Url, Value) VALUES (@Id, @IconUrl, @Url, @Value);",
+                "INSERT OR IGNORE INTO Jokes(Id, IconUrl, Url, Value) VALUES (@Id, @IconUrl, @Url, @Value);",
                 joke, transaction);
         }
 
