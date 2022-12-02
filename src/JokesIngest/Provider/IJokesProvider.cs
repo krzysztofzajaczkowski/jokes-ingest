@@ -6,6 +6,6 @@ namespace JokesIngest.Provider
 {
     public interface IJokesProvider
     {
-        Task<IEnumerable<Joke>> GetJokesAsync();
+        IAsyncEnumerable<Joke> GetJokesAsync();
     }
 }

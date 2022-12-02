@@ -8,7 +8,7 @@ namespace JokesIngest.Utils
 {
     internal static class JokesExtensions
     {
-        public static IEnumerable<Joke> ApplyFilters(this IEnumerable<Joke> jokes, IEnumerable<IJokeFilter> filters)
+        public static IAsyncEnumerable<Joke> ApplyFilters(this IAsyncEnumerable<Joke> jokes, IEnumerable<IJokeFilter> filters)
         {
             // ReSharper disable once ConvertClosureToMethodGroup
             // In my opinion using method group negatively affects readability

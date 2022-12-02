@@ -5,6 +5,6 @@ namespace JokesIngest.Repository
 {
     public interface IJokesRepository
     {
-        void SaveJokes(IEnumerable<Joke> jokes);
+        void SaveJokes(IAsyncEnumerable<Joke> jokes);
     }
 }

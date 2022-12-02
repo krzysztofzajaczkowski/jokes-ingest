@@ -1,4 +1,5 @@
-﻿using JokesIngest.Filters;
+﻿using Castle.Core.Internal;
+using JokesIngest.Filters;
 using JokesIngest.Model;
 using JokesIngest.Provider;
 using JokesIngest.Repository;
@@ -34,16 +35,17 @@ public class JokesProcessorTests : WithSubject<JokesProcessor>
         Establish ctx = () =>
             The<IJokesProvider>()
                 .WhenToldTo(x => x.GetJokesAsync())
-                .Return(Task.FromResult(new[]
+                .Return(new[]
                 {
                     Joke.From("A"),
                     Joke.From("B"),
                     Joke.From("C")
-                }.AsEnumerable()));
+                }.ToAsyncEnumerable());
 
         It should_call_repository_with_empty_enumerable = () =>
-            repository.WasNotToldTo(x =>
-                x.SaveJokes(Param<IEnumerable<Joke>>.IsAnything));
+            repository.WasToldTo(x =>
+                x.SaveJokes(Param<IAsyncEnumerable<Joke>>.Matches(jokes =>
+                    jokes.ToEnumerable().IsNullOrEmpty())));
     }
 
     class When_some_jokes_pass_filter
@@ -51,7 +53,7 @@ public class JokesProcessorTests : WithSubject<JokesProcessor>
         Establish ctx = () =>
             The<IJokesProvider>()
                 .WhenToldTo(x => x.GetJokesAsync())
-                .Return(Task.FromResult(new[]
+                .Return(new[]
                 {
                     Joke.From("A joke"),
                     Joke.From("A"),
@@ -59,13 +61,13 @@ public class JokesProcessorTests : WithSubject<JokesProcessor>
                     Joke.From("B"),
                     Joke.From("Next Chuck joke"),
                     Joke.From("C")
-                }.AsEnumerable()));         
+                }.ToAsyncEnumerable);         
 
         It should_call_repository_with_filtered_jokes = () =>
             repository.WasToldTo(x =>
-                x.SaveJokes(Param<IEnumerable<Joke>>
+                x.SaveJokes(Param<IAsyncEnumerable<Joke>>
                     .Matches(jokes =>
-                        jokes.Select(joke => joke.Text).SequenceEqual(new[]
+                        jokes.ToEnumerable().Select(joke => joke.Text).SequenceEqual(new[]
                         {
                             "A joke",
                             "Another joke",
@@ -78,19 +80,19 @@ public class JokesProcessorTests : WithSubject<JokesProcessor>
         Establish ctx = () =>
             The<IJokesProvider>()
                 .WhenToldTo(x => x.GetJokesAsync())
-                .Return(Task.FromResult(new[]
+                .Return(new[]
                 {
                     Joke.From("A joke"),
                     Joke.From("Another joke"),
                     Joke.From("Next Chuck joke"),
-                }.AsEnumerable()));
+                }.ToAsyncEnumerable);
 
         It should_call_repository_with_filtered_jokes = () =>
         {
             repository.WasToldTo(x =>
-                x.SaveJokes(Param<IEnumerable<Joke>>
+                x.SaveJokes(Param<IAsyncEnumerable<Joke>>
                     .Matches(jokes =>
-                        jokes.Select(joke => joke.Text).SequenceEqual(new[]
+                        jokes.ToEnumerable().Select(joke => joke.Text).SequenceEqual(new[]
                         {
                             "A joke",
                             "Another joke",
