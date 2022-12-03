@@ -18,6 +18,7 @@ public class ExceptionHandler : IFunctionsWorkerMiddleware
         // TODO Change to typed exception handlers after https://github.com/Azure/azure-functions-dotnet-worker/issues/993
         // As of now, exceptions in async operations are wrapped in AggregateException. Azure Functions .NET worker team plans on changing this behavior in the next major version.
         // After that change I would create typed handlers for specific exceptions and configure it like a standard middleware pipe.
+        // Different approach would be using reflection to get exception type, find handler for that type in collection and invoke typed Handle() method.
         try
         {
             await next(context);

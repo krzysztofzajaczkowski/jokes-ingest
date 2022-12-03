@@ -31,8 +31,9 @@ public class ApiJokesProviderTests : WithSubject<ApiJokesProvider>
         Configure(x => x.For<HttpClient>()
             .Use(SetupClient(messageHandlerMock)));
 
-        Configure(x => x.For<JokesProviderConfiguration>()
-            .Use(new JokesProviderConfiguration(BatchSize, "jokes/random")));
+        var config = The<IJokesProviderConfiguration>();
+        config.WhenToldTo(x => x.BatchSize).Return(BatchSize);
+        config.WhenToldTo(x => x.JokeResourcePath).Return("jokes/random");
     }
 
     #endregion

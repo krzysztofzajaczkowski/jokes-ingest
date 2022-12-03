@@ -20,7 +20,9 @@ public class SqliteJokesRepositoryTests : WithFakes
 
     private Establish ctx = async () =>
     {
-        repository = new SqliteJokesRepository(An<ILogger<SqliteJokesRepository>>(), new JokesRepositoryConfiguration(DataSource));
+        var config = An<IJokesRepositoryConfiguration>();
+        config.WhenToldTo(x => x.ConnectionString).Return(DataSource);
+        repository = new SqliteJokesRepository(An<ILogger<SqliteJokesRepository>>(), config);
         await repository.EnsureDatabaseCreated();
     };
 

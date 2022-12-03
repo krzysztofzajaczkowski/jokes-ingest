@@ -12,10 +12,10 @@ namespace JokesIngest.Repository;
 public class SqliteJokesRepository : IJokesSaver, IDisposable
 {
     private readonly ILogger<SqliteJokesRepository> _logger;
-    private readonly JokesRepositoryConfiguration _jokesRepositoryConfiguration;
+    private readonly IJokesRepositoryConfiguration _jokesRepositoryConfiguration;
     private SqliteConnection? _connection;
 
-    public SqliteJokesRepository(ILogger<SqliteJokesRepository> logger, JokesRepositoryConfiguration jokesRepositoryConfiguration)
+    public SqliteJokesRepository(ILogger<SqliteJokesRepository> logger, IJokesRepositoryConfiguration jokesRepositoryConfiguration)
     {
         _logger = logger;
         _jokesRepositoryConfiguration = jokesRepositoryConfiguration;
@@ -75,9 +75,14 @@ public class SqliteJokesRepository : IJokesSaver, IDisposable
         await foreach (var joke in jokes)
         {
             _logger.LogDebug("Ingesting joke with Id: {jokeId}", joke.Id);
-            await Connection.ExecuteAsync(
+            var affectedRows = await Connection.ExecuteAsync(
                 "INSERT OR IGNORE INTO Jokes(Id, IconUrl, Url, Value) VALUES (@Id, @IconUrl, @Url, @Value);",
                 joke, transaction);
+
+            if (affectedRows == 0)
+            {
+                _logger.LogDebug("Found duplicate with Id: {id} while ingesting, joke ignored.", joke.Id);
+            }
         }
 
         transaction.Commit();

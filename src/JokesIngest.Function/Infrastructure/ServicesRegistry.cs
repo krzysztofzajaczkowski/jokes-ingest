@@ -17,17 +17,13 @@ public static class ServicesRegistry
 {
     public static IServiceCollection RegisterConfiguration(this IServiceCollection services, HostBuilderContext context)
     {
-        services.AddSingleton(provider =>
+        services.Configure<ApplicationConfiguration>(configuration =>
         {
-            var section = provider.GetRequiredService<IConfiguration>().GetSection("JokesProvider");
-            return new JokesProviderConfiguration(
-                section.GetValue<int>("BatchSize"),
-                section.GetValue<string>("JokeResourcePath"));
+            context.Configuration.GetSection("JokesProvider").Bind(configuration);
+            configuration.ConnectionString = context.Configuration.GetConnectionString("DefaultConnection");
         });
-        services.AddSingleton(provider => new JokesRepositoryConfiguration(
-            provider.GetRequiredService<IConfiguration>().GetConnectionString("DefaultConnection")));
-
-        services.Configure<JokesApiConfiguration>(context.Configuration.GetSection("JokesProvider"));
+        services.AddSingleton<IJokesProviderConfiguration>(provider => provider.GetRequiredService<IOptions<ApplicationConfiguration>>().Value);
+        services.AddSingleton<IJokesRepositoryConfiguration>(provider => provider.GetRequiredService<IOptions<ApplicationConfiguration>>().Value);
 
         return services;
     }
@@ -36,7 +32,7 @@ public static class ServicesRegistry
     {
         services.AddHttpClient<ApiJokesProvider>((provider, client) =>
         {
-            var apiConfiguration = provider.GetRequiredService<IOptions<JokesApiConfiguration>>().Value;
+            var apiConfiguration = provider.GetRequiredService<IOptions<ApplicationConfiguration>>().Value;
             client.BaseAddress = apiConfiguration.BaseAddress;
             foreach (var (key, value) in apiConfiguration.Headers)
             {

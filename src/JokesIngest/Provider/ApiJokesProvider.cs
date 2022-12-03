@@ -10,9 +10,9 @@ namespace JokesIngest.Provider
     {
         private readonly ILogger<ApiJokesProvider> _logger;
         private readonly HttpClient _httpClient;
-        private readonly JokesProviderConfiguration _jokesProviderConfiguration;
+        private readonly IJokesProviderConfiguration _jokesProviderConfiguration;
 
-        public ApiJokesProvider(ILogger<ApiJokesProvider> logger, HttpClient httpClient, JokesProviderConfiguration jokesProviderConfiguration)
+        public ApiJokesProvider(ILogger<ApiJokesProvider> logger, HttpClient httpClient, IJokesProviderConfiguration jokesProviderConfiguration)
         {
             _logger = logger;
             _httpClient = httpClient;
