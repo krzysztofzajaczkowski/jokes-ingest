@@ -5,16 +5,19 @@ using System.Threading.Tasks;
 using Dapper;
 using JokesIngest.Model;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 
 namespace JokesIngest.Repository;
 
 public class SqliteJokesRepository : IJokesSaver, IDisposable
 {
+    private readonly ILogger<SqliteJokesRepository> _logger;
     private readonly JokesRepositoryConfiguration _jokesRepositoryConfiguration;
     private SqliteConnection? _connection;
 
-    public SqliteJokesRepository(JokesRepositoryConfiguration jokesRepositoryConfiguration)
+    public SqliteJokesRepository(ILogger<SqliteJokesRepository> logger, JokesRepositoryConfiguration jokesRepositoryConfiguration)
     {
+        _logger = logger;
         _jokesRepositoryConfiguration = jokesRepositoryConfiguration;
     }
 
@@ -27,8 +30,10 @@ public class SqliteJokesRepository : IJokesSaver, IDisposable
                 return _connection;
             }
 
+            _logger.LogDebug("Creating connection.");
             _connection = new SqliteConnection(_jokesRepositoryConfiguration.ConnectionString);
             _connection.Open();
+            _logger.LogDebug("Connection opened.");
 
             return _connection;
         }
@@ -48,6 +53,7 @@ public class SqliteJokesRepository : IJokesSaver, IDisposable
 
         if (string.IsNullOrEmpty(tableName))
         {
+            _logger.LogInformation("Table not found, creating table.");
             await Connection.ExecuteAsync(@"
                 CREATE TABLE Jokes (
                     Id CHAR(22) NOT NULL PRIMARY KEY,
@@ -56,21 +62,26 @@ public class SqliteJokesRepository : IJokesSaver, IDisposable
                     Value VARCHAR(200) UNIQUE NOT NULL
                 );"
             );
+            _logger.LogInformation("Table created.");
         }
     }
 
     public async Task SaveJokes(IAsyncEnumerable<Joke> jokes)
     {
+        _logger.LogInformation("Ingesting jokes into sqlite database.");
+        _logger.LogDebug("Beginning transaction.");
         await using var transaction = Connection.BeginTransaction();
 
         await foreach (var joke in jokes)
         {
+            _logger.LogDebug("Ingesting joke with Id: {jokeId}", joke.Id);
             await Connection.ExecuteAsync(
                 "INSERT OR IGNORE INTO Jokes(Id, IconUrl, Url, Value) VALUES (@Id, @IconUrl, @Url, @Value);",
                 joke, transaction);
         }
 
         transaction.Commit();
+        _logger.LogDebug("Transaction committed");
     }
 
     public async Task<IEnumerable<Joke>> GetJokesAsync()

@@ -17,7 +17,6 @@ public static class HostBuilderExtensions
 
     public static void SetupMiddleware(this IFunctionsWorkerApplicationBuilder builder)
     {
-        builder.UseMiddleware<HttpRequestExceptionHandler>();
-        builder.UseMiddleware<SqlExceptionHandler>();
+        builder.UseMiddleware<ExceptionHandler>();
     }
 }

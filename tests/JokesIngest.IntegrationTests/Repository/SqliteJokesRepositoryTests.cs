@@ -1,7 +1,9 @@
 ﻿using JokesIngest.Model;
 using JokesIngest.Repository;
 using JokesIngest.Tests;
+using Machine.Fakes;
 using Machine.Specifications;
+using Microsoft.Extensions.Logging;
 
 // ReSharper disable InconsistentNaming
 // ReSharper disable ArrangeTypeMemberModifiers
@@ -9,7 +11,7 @@ using Machine.Specifications;
 namespace JokesIngest.IntegrationTests.Repository;
 
 [Subject(typeof(SqliteJokesRepository))]
-public class SqliteJokesRepositoryTests
+public class SqliteJokesRepositoryTests : WithFakes
 {
     const string DataSource = "Data Source=:memory:";
     
@@ -18,7 +20,7 @@ public class SqliteJokesRepositoryTests
 
     private Establish ctx = async () =>
     {
-        repository = new SqliteJokesRepository(new JokesRepositoryConfiguration(DataSource));
+        repository = new SqliteJokesRepository(An<ILogger<SqliteJokesRepository>>(), new JokesRepositoryConfiguration(DataSource));
         await repository.EnsureDatabaseCreated();
     };
 

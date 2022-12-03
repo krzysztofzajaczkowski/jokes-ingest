@@ -18,5 +18,13 @@
   },
   "ConnectionStrings": {
     "DefaultConnection": "DataSource=db.sqlite"
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Override": {
+        "JokesIngest": "Debug",
+        "System.Net.Http.HttpClient": "Warning"
+      }
+    }
   }
 }
