@@ -8,6 +8,7 @@ using Serilog;
 
 namespace JokesIngest.Function.Infrastructure;
 
+// This class might be redundant boilerplaiting but I wholeheartedly resent long, unstructured dependencies registration.
 public static class HostBuilderExtensions
 {
     public static IHostBuilder AddConfiguration(this IHostBuilder host) =>

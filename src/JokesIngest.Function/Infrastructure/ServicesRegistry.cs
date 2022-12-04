@@ -60,8 +60,15 @@ public static class ServicesRegistry
 
     public static IServiceCollection AddErrorHandlers(this IServiceCollection services)
     {
-        services.AddSingleton<IErrorHandler, HttpRequestExceptionHandler>();
-        services.AddSingleton<IErrorHandler, SqliteExceptionHandler>();
+        var handlerImplementations = typeof(Program).Assembly
+            .GetTypes()
+            .Where(x => !x.IsInterface && x.IsAssignableTo(typeof(IErrorHandler)))
+            .ToList();
+
+        foreach (var type in handlerImplementations)
+        {
+            services.AddSingleton(typeof(IErrorHandler), type);
+        }
 
         return services;
     }

@@ -7,12 +7,12 @@ namespace JokesIngest.Function.Functions
     public class JokesIngest
     {
         private readonly JokesProcessor _jokesProcessor;
-        private readonly ILogger _logger;
+        private readonly ILogger<JokesIngest> _logger;
 
-        public JokesIngest(ILoggerFactory loggerFactory, JokesProcessor jokesProcessor)
+        public JokesIngest(ILogger<JokesIngest> logger, JokesProcessor jokesProcessor)
         {
             _jokesProcessor = jokesProcessor;
-            _logger = loggerFactory.CreateLogger<JokesIngest>();
+            _logger = logger;
         }
 
         [Function("JokesIngest")]
