@@ -6,14 +6,13 @@ using Microsoft.Extensions.Hosting;
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults(builder => builder.SetupMiddleware())
     .AddConfiguration()
+    .AddLogging()
     .ConfigureServices((context, services) =>
-    {
         services.RegisterConfiguration(context)
-            .AddLogging(context)
+            .AddApplicationInsightsTelemetryWorkerService(context.Configuration)
             .RegisterApiClient()
             .AddApplicationServices()
-            .AddErrorHandlers();
-    })
+            .AddErrorHandlers())
     .Build();
 
 using var startupScope = host.Services.CreateScope();

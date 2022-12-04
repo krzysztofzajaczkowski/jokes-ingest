@@ -1,7 +1,10 @@
 ﻿using JokesIngest.Function.Infrastructure.Middleware;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace JokesIngest.Function.Infrastructure;
 
@@ -15,8 +18,16 @@ public static class HostBuilderExtensions
 #endif
                 .AddEnvironmentVariables());
 
-    public static void SetupMiddleware(this IFunctionsWorkerApplicationBuilder builder)
-    {
-        builder.UseMiddleware<ExceptionHandler>();
-    }
+    public static void SetupMiddleware(this IFunctionsWorkerApplicationBuilder builder) => builder.UseMiddleware<ExceptionHandler>();
+
+    public static IHostBuilder AddLogging(this IHostBuilder host) =>
+        host.UseSerilog((context, services, logger) =>
+            logger.Enrich.FromLogContext()
+                .ReadFrom.Configuration(context.Configuration)
+                .WriteTo.ApplicationInsights(
+                    services.GetRequiredService<TelemetryConfiguration>(),
+                    TelemetryConverter.Traces)
+                .WriteTo.Console(
+                    outputTemplate:
+                    "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:l} {NewLine}{Properties}{NewLine}{Exception}"));
 }

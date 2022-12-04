@@ -6,9 +6,7 @@ using JokesIngest.Repository;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Serilog;
 
 namespace JokesIngest.Function.Infrastructure;
 
@@ -64,19 +62,6 @@ public static class ServicesRegistry
     {
         services.AddSingleton<IErrorHandler, HttpRequestExceptionHandler>();
         services.AddSingleton<IErrorHandler, SqliteExceptionHandler>();
-
-        return services;
-    }
-
-    public static IServiceCollection AddLogging(this IServiceCollection services, HostBuilderContext context)
-    {
-        var logger = new LoggerConfiguration()
-            .Enrich.FromLogContext()
-            .ReadFrom.Configuration(context.Configuration)
-            .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:l} {NewLine}{Properties}{NewLine}{Exception}")
-            .CreateLogger();
-
-        services.AddLogging(builder => builder.ClearProviders().AddSerilog(logger));
 
         return services;
     }
