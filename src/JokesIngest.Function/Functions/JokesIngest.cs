@@ -16,7 +16,7 @@ namespace JokesIngest.Function.Functions
         }
 
         [Function("JokesIngest")]
-        public async Task Run([TimerTrigger("%TriggerSchedule%", RunOnStartup = true)] TriggerInfo triggerTimer)
+        public async Task IngestBatch([TimerTrigger("%TriggerSchedule%", RunOnStartup = true)] TriggerInfo triggerTimer)
         {
             await _jokesProcessor.IngestNextBatch();
             _logger.LogDebug($"Timer trigger function executed at: {DateTime.UtcNow}");
